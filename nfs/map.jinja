@@ -1,18 +1,13 @@
-{% set map = {
-    'Ubuntu': {
-        'pkgs_server': ['nfs-common', 'nfs-kernel-server'],
-        'pkgs_client': ['nfs-common'],
-        'service_name': 'nfs-kernel-server'
-    },
+{% set nfs = salt['grains.filter_by']({
     'Debian': {
         'pkgs_server': ['nfs-common', 'nfs-kernel-server'],
         'pkgs_client': ['nfs-common'],
         'service_name': 'nfs-kernel-server'
-    }
-} %}
+    },
+    'RedHat': {
+        'pkgs_server': ['nfs-utils', 'rpcbind'],
+        'pkgs_client': ['nfs-utils'],
+        'service_name': 'nfs-server'
+    },
+}, merge=salt['pillar.get']('nfs:lookup'), default='Debian') %}
 
-{% if grains.get('saltversion', '').startswith('0.17') %}
-{% set nfs = salt['grains.filter_by'](map, merge=salt['pillar.get']('nfs:lookup'), base='default') %}
-{% else %}
-{% set nfs = map.get(grains.os) %}
-{% endif %}
