@@ -16,8 +16,4 @@
     }
 } %}
 
-{% if grains.get('saltversion', '').startswith('2017') %}
 {% set nfs = salt['grains.filter_by'](map, merge=salt['pillar.get']('nfs:lookup'), base='default') %}
-{% else %}
-{% set nfs = map.get(grains.os) %}
-{% endif %}
